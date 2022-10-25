@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 薬を飲むタイミング別の票でどれだけ登録したか
 登録したデータベースの方から通知で呼び出す
+
+検索  ソート
 */
 
 void main() => runApp(const SearchApp());
@@ -42,6 +44,7 @@ class _SearchScreenState extends State<SearchScreen> {
     "安本病院",
     "福岡市民病院",
   ];
+  String text = "";
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +55,16 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Autocomplete(
             optionsBuilder: (textEditingValue) {
               return hospitalList.where(
-                (element) => element.contains(textEditingValue.text)
+                (element) => element.contains(textEditingValue.text),
               );
             },
           ),
         ),
       ),
+
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add)),
     );
   }
 }
