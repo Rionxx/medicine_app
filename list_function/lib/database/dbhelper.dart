@@ -1,9 +1,12 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'package:list_function/model/photo.dart';
 
-class Data {
+/******************Next Code********************/
+
+class DBHelper {
   static Database _db;
   static const String id = 'id';
   static const String text = 'text';
@@ -30,25 +33,25 @@ class Data {
     await db.execute(
       'CREATE TABLE $photo ('
         '$id INTEGER PRIMARY KEY AUTOINCREMENT,'
-        '$text TEXT)'
+        '$text TEXT,)'
     );
   }
 
   //read all items
   static Future<List<Map<String, dynamic>>> getItems() async {
-    final db = await Data.initDB();
+    final db = await DBHelper.initDB();
     return db.query('items', orderBy: id);
   }
 
   //read single item
   static Future<List<Map<String, dynamic>>> getItem(int id) async {
-    final db = await Data.initDB();
+    final db = await DBHelper.initDB();
     return db.query('items', where: "id = ?", whereArgs: [id], limit: 1);
   }
 
   //update item
   static Future<int> updateItem(int id, String text, String photo) async {
-    final db = await Data.initDB();
+    final db = await DBHelper.initDB();
 
     final data = {
       'text': text,
@@ -61,11 +64,11 @@ class Data {
 
   // delete item
   static Future<void> deleteItem(int id) async {
-    final db = await Data.initDB();
+    final db = await DBHelper.initDB();
     try {
       db.delete("items", where: "id=?", whereArgs: [id]);
     } catch(err) {
-      debugPrint("Something went wrong when deleting an item: $err");
+      //debugPrint("Something went wrong when deleting an item: $err");
     }
   }
 }
