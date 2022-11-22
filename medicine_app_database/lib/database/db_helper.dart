@@ -10,7 +10,10 @@ class MedicineData {
   final String _ocrtext = Medicine().ocrtext;
   final String _time = Medicine().time;
 
-  Database _database;
+  static Database _database;
+
+  MedicineData._privateConstructor();
+  static final MedicineData instance = MedicineData._privateConstructor();
 
   //データベースの参照
   Future<Database> get database async {
@@ -45,24 +48,36 @@ class MedicineData {
 
   //データベースの読み込み
   Future<List<Medicine>> loadAllMedicine() async {
-    final db = await database;
-    var maps = await db.query(
-      _tableName,
-    );
+    final db = await instance.database;
+    var maps = await db.query(_tableName);
 
     if (maps.isEmpty) return [];
     return maps.map((map) => fromMap(map)).toList();
   }
 
+  //データの検索
+  Future<List<Medicine>> search(String word) async {
+    final db = await instance.database;
+    var maps = await db.query(
+      _tableName,
+      orderBy: '$_time DESC',
+      where: '$_title LIKE ?',
+      whereArgs: ['%$word%']
+    );
+    if (maps.isEmpty) return [];
+    return maps.map((map) => fromMap(map)).toList();
+  }
+
+  
   //データベースの挿入
   Future insert(Medicine medicine) async {
-    final db = await database;
+    final db = await instance.database;
     return await db.insert(_tableName, toMap(medicine));
   }
 
   //データの更新
   Future update(Medicine medicine) async {
-    final db = await database;
+    final db = await instance.database;
     return await db.update(
       _tableName, 
       toMap(medicine),
@@ -73,7 +88,7 @@ class MedicineData {
 
   //データの削除
   Future delete(Medicine medicine) async {
-    final db = await database;
+    final db = await instance.database;
     return await db.delete(
       _tableName,
       where: '$_id = ?',

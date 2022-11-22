@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medicine_app_database/view/list/list_page.dart';
 import 'package:medicine_app_database/view/calendar/calendar.dart';
-//import 'package:medicine_app_database/view/medicine_card.dart';
-//import 'package:medicine_app_database/view/search_bar.dart';
 
 void main() {
   runApp(HomePage());

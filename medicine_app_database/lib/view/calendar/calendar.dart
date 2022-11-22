@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:medicine_app_database/view/calendar/notify_add.dart';
 
 DateTime _focused = DateTime.now();
 
@@ -25,6 +26,21 @@ class _CalendarState extends State<CalendarPage> {
           focusedDay: _focused,
         ),
       ),
+
+      floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.black,
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NotifyAddPage(),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
     );
   }
 }

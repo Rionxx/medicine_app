@@ -1,10 +1,12 @@
 class MedicineAlart {
-  int id;
+  int medicineId;
+  int notifyId;
   bool toggle;
   String notifyTime;
 
   MedicineAlart({
-    this.id,
+    this.medicineId,
+    this.notifyId,
     this.toggle,
     this.notifyTime,
   });
@@ -17,7 +19,8 @@ class MedicineAlart {
   }
 
   MedicineAlart.fromMap(Map json) :
-    id = json['id'],
+    medicineId = json['medicineId'],
+    notifyId = json['notifyId'],
     toggle = json['toggle'],
     notifyTime = json['notifyTime'];
 }

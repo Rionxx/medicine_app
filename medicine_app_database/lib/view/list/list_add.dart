@@ -90,7 +90,7 @@ class _ListAddPageState extends State<ListAddPage> {
             height: 180,
             child: InkWell(
               onTap: () async {
-                //　カメラを起動
+                //カメラを起動
               },
               child: _pickedFile != null
                   ? Image.file(File(_pickedFile.path))

@@ -26,6 +26,13 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+
+
+flutter_icons:
+  image_path: "lib/icons/icon.jpg"
+  android: true
+  ios: true
+
 dependencies:
   flutter:
     sdk: flutter
@@ -44,6 +51,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: any
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -61,6 +69,8 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  assets:
+    - lib/images/
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

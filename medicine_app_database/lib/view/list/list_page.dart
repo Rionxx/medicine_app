@@ -1,22 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:medicine_app_database/database/db_helper.dart';
 import 'package:medicine_app_database/model/medicine.dart';
 import 'package:medicine_app_database/view/memo_page.dart';
 import 'list_add.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ListPage extends StatefulWidget {
-
   @override
   State<ListPage> createState() => _ListPageState();
 }
 
 class _ListPageState extends State<ListPage> {
   bool _searchBoolean = false;
+  //bool _isLording = false;
   List<Medicine> medicineList = [
     Medicine(
-        id: 0, title: '田中病院', image: '', time: '5月12日(月)', ocrtext: '田中病院')
+        id: 0,
+        title: '田中病院',
+        image: 'lib/images/sample.jpg',
+        time: '5月12日(月)',
+        ocrtext: '田中病院'),
+    Medicine(
+        id: 1,
+        title: '博多病院',
+        image: 'lib/images/sample2.jpg',
+        time: '8月14日(水)',
+        ocrtext: '博多病院'),
   ];
 
+  /*関数の追加*/
+  void _deleteItem(id) async {
+    MedicineData.instance.delete;
+    setState(() {
+      medicineList.removeWhere((element) => element.id == id);
+    });
+  }
+
+  /*viewの追加*/
   Widget _searchTextField() {
     return const TextField(
       autofocus: true, //TextFieldが表示されるときにフォーカスする（キーボードを表示する）
@@ -80,13 +100,15 @@ class _ListPageState extends State<ListPage> {
                 IconButton(
                   icon: const Icon(Icons.edit),
                   color: Colors.black,
-                  onPressed: () {},
+                  onPressed: () {
+                    //add Edit function
+                  },
                   iconSize: 60,
                 ),
                 //ノートボタン
                 IconButton(
                   color: Colors.black,
-                  onPressed: () async{
+                  onPressed: () async {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -158,7 +180,10 @@ class _ListPageState extends State<ListPage> {
                                     foregroundColor: Colors.white,
                                     icon: Icons.delete,
                                     label: '削除',
-                                    onPressed: (BuildContext context) async {}),
+                                    onPressed: (BuildContext context) async {
+                                      //add delete function
+                                      _deleteItem(medicineList[index].id);
+                                    }),
                               ],
                             ),
                             child: ListTile(
