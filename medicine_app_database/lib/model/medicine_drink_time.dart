@@ -1,6 +1,6 @@
 class MedicineDrinkTime {
   int medicineId;
-  String date;
+  String drinkDate;
   String morningTime;
   String lanchTime;
   String nightTime;
@@ -8,14 +8,16 @@ class MedicineDrinkTime {
 
   MedicineDrinkTime({
     this.medicineId,
+    this.drinkDate,
     this.morningTime,
     this.lanchTime,
     this.nightTime,
-    this.amountDrink, date,
+    this.amountDrink,
   });
 
   Map<String, dynamic> toMAp() {
     return {
+      'drinkDate': drinkDate,
       'morningTime': morningTime,
       'lanchTime': lanchTime,
       'nightTime': nightTime,
@@ -25,7 +27,7 @@ class MedicineDrinkTime {
 
   MedicineDrinkTime.fromMap(Map json):
     medicineId = json['medicineId'],
-    date = json['date'],
+    drinkDate = json['drinkDate'],
     morningTime = json['morningTime'],
     lanchTime = json['lanchTime'],
     nightTime = json['nightTime'],
