@@ -24,7 +24,10 @@ class Medicine {
 
   Medicine.fromMap(Map json) 
     : id = json['id'],
-      title = json['image'],
+      image = json['image'],
+      title = json['title'],
       ocrtext = json['ocrtext'],
       time = json['time'];
+
+  contains(String keyword) {}
 }

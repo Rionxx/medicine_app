@@ -13,6 +13,7 @@ class AmountDrinkData {
   final String _nightTime = MedicineDrinkTime().nightTime;
   final String _amountDrink = MedicineDrinkTime().amountDrink;
 
+
   static Database _database;
   static final AmountDrinkData instance = AmountDrinkData._privateConstructor();
   AmountDrinkData._privateConstructor();

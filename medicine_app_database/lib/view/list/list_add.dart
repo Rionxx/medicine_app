@@ -2,6 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:medicine_app_database/view/memo_page.dart';
+import 'package:medicine_app_database/database/db_helper.dart';
+import 'package:medicine_app_database/model/medicine.dart';
+import 'package:medicine_app_database/view/list/list_page.dart';
 //import 'package:medicine_app_database/model/file_controller.dart';
 
 class ListAddPage extends StatefulWidget {
@@ -13,6 +16,14 @@ class _ListAddPageState extends State<ListAddPage> {
   XFile _pickedFile;
   String titleText;
   String ocrText = '';
+  List<Medicine> medicineList = [];
+
+  void _addItem() async {
+    var id = await MedicineData.instance.insert(Medicine());
+    setState(() {
+      medicineList.insert(id, Medicine());
+    });
+  }
 
   //タイトル入力フォーム
   Widget titleTextFieldView(BuildContext context) {
@@ -202,6 +213,7 @@ class _ListAddPageState extends State<ListAddPage> {
         ),
         onPressed: () {
           //データを追加する関数
+          _addItem();
         },
         child: const Text('追加', style: TextStyle(fontWeight: FontWeight.bold)),
       ),

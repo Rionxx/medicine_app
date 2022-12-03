@@ -1,7 +1,7 @@
 class MedicineAlart {
   int medicineId;
   int notifyId;
-  bool toggle;
+  int toggle;
   String notifyTime;
 
   MedicineAlart({

@@ -4,6 +4,8 @@ import 'package:medicine_app_database/model/medicine.dart';
 import 'package:medicine_app_database/view/memo_page.dart';
 import 'list_add.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:medicine_app_database/model/repository/medicine_repository.dart';
+import 'package:medicine_app_database/view/list/medicine_list_view_model.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -12,7 +14,6 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   bool _searchBoolean = false;
-  //bool _isLording = false;
   List<Medicine> medicineList = [
     Medicine(
         id: 0,
@@ -27,8 +28,11 @@ class _ListPageState extends State<ListPage> {
         time: '8月14日(水)',
         ocrtext: '博多病院'),
   ];
+  List<int> searchIndexMedicine = [];
+  DateTime _lastChangedDate = DateTime.now();
 
   /*関数の追加*/
+  //データの削除
   void _deleteItem(id) async {
     MedicineData.instance.delete;
     setState(() {
@@ -36,18 +40,32 @@ class _ListPageState extends State<ListPage> {
     });
   }
 
+  //検索機能の関数
+  void _search(String keyword) async {
+    MedicineData.instance.search;
+    setState(() {
+      searchIndexMedicine = [];
+      for (int i = 0; i < medicineList.length; i++) {
+        if (medicineList[i].title.contains(keyword)) {
+          searchIndexMedicine.add(i);
+        }
+      }
+    });
+  }
+
   /*viewの追加*/
   Widget _searchTextField() {
-    return const TextField(
+    return TextField(
+      onChanged: _search,
       autofocus: true, //TextFieldが表示されるときにフォーカスする（キーボードを表示する）
       cursorColor: Colors.white, //カーソルの色
-      style: TextStyle(
+      style: const TextStyle(
         //テキストのスタイル
         color: Colors.white,
         fontSize: 20,
       ),
       textInputAction: TextInputAction.search, //キーボードのアクションボタンを指定
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         //TextFiledのスタイル
         enabledBorder: UnderlineInputBorder(
             //デフォルトのTextFieldの枠線
@@ -62,6 +80,120 @@ class _ListPageState extends State<ListPage> {
           fontSize: 20,
         ),
       ),
+    );
+  }
+
+  //検索結果
+  Widget _searchListView() {
+    return ListView.builder(
+      itemCount: searchIndexMedicine.length,
+      itemBuilder: (context, index) {
+        index = searchIndexMedicine[index];
+        return Card(
+          elevation: 20.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Slidable(
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                //削除ボタン
+                SlidableAction(
+                    flex: 2,
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    icon: Icons.delete,
+                    label: '削除',
+                    onPressed: (BuildContext context) async {
+                      //add delete function
+                      _deleteItem(medicineList[index].id);
+                    }),
+              ],
+            ),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              tileColor: Colors.pink[100],
+              title: Container(
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            '病院名：${medicineList[index].title}\n日付：${medicineList[index].time}'),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        imageView(context, index) //写真
+                      ],
+                    ),
+                    iconButtonWidget(context, index) //アイコンボタン
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _defaultListView() {
+    return ListView.builder(
+      itemCount: medicineList.length,
+      itemBuilder: (context, index) {
+        return Card(
+          elevation: 20.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Slidable(
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                //削除ボタン
+                SlidableAction(
+                    flex: 2,
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    icon: Icons.delete,
+                    label: '削除',
+                    onPressed: (BuildContext context) async {
+                      //add delete function
+                      _deleteItem(medicineList[index].id);
+                    }),
+              ],
+            ),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              tileColor: Colors.pink[100],
+              title: Container(
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            '病院名：${medicineList[index].title}\n日付：${medicineList[index].time}'),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        imageView(context, index) //写真
+                      ],
+                    ),
+                    iconButtonWidget(context, index) //アイコンボタン
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -145,6 +277,7 @@ class _ListPageState extends State<ListPage> {
                         onPressed: () {
                           setState(() {
                             _searchBoolean = true;
+                            _search;
                           });
                         })
                   ]
@@ -158,64 +291,7 @@ class _ListPageState extends State<ListPage> {
                         })
                   ],
           ),
-          body: Column(
-            children: [
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: medicineList.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          elevation: 20.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Slidable(
-                            endActionPane: ActionPane(
-                              motion: const ScrollMotion(),
-                              children: [
-                                //削除ボタン
-                                SlidableAction(
-                                    flex: 2,
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                    icon: Icons.delete,
-                                    label: '削除',
-                                    onPressed: (BuildContext context) async {
-                                      //add delete function
-                                      _deleteItem(medicineList[index].id);
-                                    }),
-                              ],
-                            ),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              tileColor: Colors.pink[100],
-                              title: Container(
-                                child: Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            '病院名：${medicineList[index].title}\n日付：${medicineList[index].time}'),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        imageView(context, index) //写真
-                                      ],
-                                    ),
-                                    iconButtonWidget(context, index) //アイコンボタン
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      })),
-            ],
-          ),
+          body: !_searchBoolean ? _defaultListView() : _searchListView(),
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.black,
             onPressed: () async {

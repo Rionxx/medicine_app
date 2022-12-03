@@ -1,14 +1,17 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:medicine_app_database/model/medicine.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class MedicineData {
-  final int _id = Medicine().id;
+  final String _id = 'id';
   final String _tableName = "Medicine";
-  final String _title = Medicine().title;
-  final String _image = Medicine().image;
-  final String _ocrtext = Medicine().ocrtext;
-  final String _time = Medicine().time;
+  final String _title = 'title';
+  final String _image = 'image';
+  final String _ocrtext = 'ocrtext';
+  final String _time = 'time';
 
   static Database _database;
 
@@ -24,7 +27,8 @@ class MedicineData {
 
   //データベースの初期化
   Future<Database> _initDB() async {
-    String path = join(await getDatabasesPath(), 'medicine.db');
+    var dataDirectory = await getDatabasesPath();
+    String path = join(dataDirectory, 'medicine.db');
 
     return await openDatabase(
       path,
@@ -37,8 +41,9 @@ class MedicineData {
   Future<void> _createTable(Database db, int version) async {
     String sql = '''
       CREATE TABLE $_tableName(
-        $_id INTEGER PRIMARY KEY,
+        $_id INTEGER PRIMARY KEY AUTOINCREMENT,
         $_title TEXT,
+        $_image TEXT,
         $_ocrtext TEXT,
         $_time TEXT
       )
@@ -49,30 +54,41 @@ class MedicineData {
   //データベースの読み込み
   Future<List<Medicine>> loadAllMedicine() async {
     final db = await instance.database;
-    var maps = await db.query(_tableName);
+    var medicinesData = await db.query(_tableName);
 
-    if (maps.isEmpty) return [];
-    return maps.map((map) => fromMap(map)).toList();
+    return  medicinesData.map((map) => Medicine.fromMap(map)).toList();
+  }
+
+  Future<Medicine> medicineData(int id) async {
+    final db = await instance.database;
+    var medicine = [];
+    medicine = await db.query(
+      'medicine',
+      where: '$_id = ?',
+      whereArgs: [id],
+    );
+    return Medicine.fromMap(medicine.first);
   }
 
   //データの検索
-  Future<List<Medicine>> search(String word) async {
+  
+  Future<List<Medicine>> search(String keyword) async {
     final db = await instance.database;
     var maps = await db.query(
       _tableName,
       orderBy: '$_time DESC',
       where: '$_title LIKE ?',
-      whereArgs: ['%$word%']
+      whereArgs: ['%$keyword%']
     );
     if (maps.isEmpty) return [];
-    return maps.map((map) => fromMap(map)).toList();
+    return maps.map((map) => Medicine.fromMap(map)).toList();
   }
 
   
   //データベースの挿入
-  Future insert(Medicine medicine) async {
+  Future<int> insert(Medicine medicine) async {
     final db = await instance.database;
-    return await db.insert(_tableName, toMap(medicine));
+    return await db.insert(_tableName, medicine.toMap());
   }
 
   //データの更新
@@ -80,7 +96,7 @@ class MedicineData {
     final db = await instance.database;
     return await db.update(
       _tableName, 
-      toMap(medicine),
+      medicine.toMap(),
       where: '$_id = ?',
       whereArgs: [medicine.id],
     );
@@ -93,26 +109,6 @@ class MedicineData {
       _tableName,
       where: '$_id = ?',
       whereArgs: [medicine.id],
-    );
-  }
-
-  Map<String, dynamic> toMap(Medicine medicine) {
-    return {
-      _title: medicine.title,
-      _image: medicine.image,
-      _ocrtext: medicine.ocrtext,
-      _time: medicine.time,
-    };
-  }
-
-  //データベースの内容をjson化
-  Medicine fromMap(Map<String, dynamic> json) {
-    return Medicine(
-      id: json[_id],
-      title: json[_title],
-      image: json[_image],
-      ocrtext: json[_ocrtext],
-      time: json[_time],
     );
   }
 }
