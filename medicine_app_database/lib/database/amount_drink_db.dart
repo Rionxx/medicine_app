@@ -1,13 +1,11 @@
-import 'package:medicine_app_database/model/medicine.dart';
 import 'package:medicine_app_database/model/medicine_drink_time.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart';
 
 class AmountDrinkData {
   final String _tableName = "AmountDrink";
   final int _medicineId = MedicineDrinkTime().medicineId;
-  final String _date = MedicineDrinkTime().date;
+  final String _drinkDate = MedicineDrinkTime().drinkDate;
   final String _morningTime = MedicineDrinkTime().morningTime;
   final String _lanchTime = MedicineDrinkTime().lanchTime;
   final String _nightTime = MedicineDrinkTime().nightTime;
@@ -20,6 +18,8 @@ class AmountDrinkData {
 
   Future<Database> get database async {
     if (_database != null) return _database;
+    _database = await _initDB();
+    return _database;
   }
 
   Future<Database> _initDB() async {
@@ -36,7 +36,7 @@ class AmountDrinkData {
     String sql = ''' 
       CREATE TABLE $_tableName(
         $_medicineId INTEGER PRIMARY KEY,
-        $_date TEXT,
+        $_drinkDate TEXT,
         $_morningTime TEXT,
         $_lanchTime TEXT,
         $_nightTime TEXT,
@@ -80,7 +80,7 @@ class AmountDrinkData {
 
   Map<String, dynamic> toMap(MedicineDrinkTime medicine) {
     return {
-      _date: medicine.date,
+      _drinkDate: medicine.drinkDate,
       _morningTime: medicine.morningTime,
       _lanchTime: medicine.lanchTime,
       _nightTime: medicine.nightTime,
@@ -91,7 +91,7 @@ class AmountDrinkData {
   MedicineDrinkTime fromMap(Map<String, dynamic> json) {
     return MedicineDrinkTime(
       medicineId: json[_medicineId],
-      date: json[_date],
+      drinkDate: json[_drinkDate],
       morningTime: json[_morningTime],
       lanchTime: json[_lanchTime],
       nightTime: json[_nightTime],
