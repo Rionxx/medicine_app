@@ -4,10 +4,11 @@ import 'package:path/path.dart';
 
 class AlartData {
   final String _tableName = "Alart";
-  final int _medicineId = MedicineAlart().medicineId;
-  final int _notifyId = MedicineAlart().notifyId;
-  final int _toggle = MedicineAlart().toggle;
-  final String _notityTime = MedicineAlart().notifyTime;
+  final String _medicineId = 'medicineId';
+  final String _notifyId = 'notifyId';
+  final String _toggle = 'toggle';
+  final String _notityTime = 'notifyTime';
+  final String _isOn = 'isOn';
 
   static Database _database;
 
@@ -19,7 +20,6 @@ class AlartData {
     if (_database != null) return _database;
     _database = await _initDB();
     return _database;
-    
   }
 
   //データベースの初期化
@@ -40,7 +40,8 @@ class AlartData {
         $_medicineId INTEGER PRIMARY KEY,
         $_notifyId INTEGER PRIMARY KEY,
         $_toggle INTEGER PRIMARY KEY,
-        $_notityTime TEXT
+        $_notityTime TEXT,
+        $_isOn INTEGER PRIMARY KEY
       )
     ''';
     return await db.execute(sql);
@@ -52,12 +53,12 @@ class AlartData {
     var maps = await db.query(_tableName);
 
     if (maps.isEmpty) return [];
-    return maps.map((map) => fromMap(map)).toList();
+    return maps.map((map) => MedicineAlart.fromMap(map)).toList();
   }
 
   Future insert(MedicineAlart medicine) async {
     final db = await instance.database;
-    return await db.insert(_tableName, toMap(medicine));
+    return await db.insert(_tableName, medicine.toMap());
   }
 
   /*更新と削除についてidが二つあるため、複数のコードが必要なのか*/
@@ -66,7 +67,7 @@ class AlartData {
     final db = await instance.database;
     return await db.update(
       _tableName, 
-      toMap(medicine),
+      medicine.toMap(),
       where: '$_medicineId = ?',
       whereArgs: [medicine.medicineId],
     );
@@ -81,22 +82,4 @@ class AlartData {
       whereArgs: [medicine.medicineId],
     );
   }
-
-
-  Map<String, dynamic> toMap(MedicineAlart alart) {
-    return {
-      //_toggle: alart.toggle,
-      _notityTime: alart.notifyTime,
-    };
-  }
-
-  MedicineAlart fromMap(Map<String, dynamic> json) {
-    return MedicineAlart(
-      medicineId: json[_medicineId],
-      notifyId: json[_notifyId],
-      toggle: json[_toggle],
-      notifyTime: json[_notityTime]
-    ); 
-  }
-  
 }

@@ -4,8 +4,6 @@ import 'package:medicine_app_database/model/medicine.dart';
 import 'package:medicine_app_database/view/memo_page.dart';
 import 'list_add.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:medicine_app_database/model/repository/medicine_repository.dart';
-import 'package:medicine_app_database/view/list/medicine_list_view_model.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -29,7 +27,7 @@ class _ListPageState extends State<ListPage> {
         ocrtext: '博多病院'),
   ];
   List<int> searchIndexMedicine = [];
-  DateTime _lastChangedDate = DateTime.now();
+  //DateTime _lastChangedDate = DateTime.now();
 
   /*関数の追加*/
   //データの削除
@@ -37,6 +35,7 @@ class _ListPageState extends State<ListPage> {
     MedicineData.instance.delete;
     setState(() {
       medicineList.removeWhere((element) => element.id == id);
+      print(id);
     });
   }
 
@@ -50,7 +49,16 @@ class _ListPageState extends State<ListPage> {
           searchIndexMedicine.add(i);
         }
       }
+      print(keyword);
     });
+  }
+
+  //並び替え処理の関数
+  void _onReorder(List<Medicine> medicines, int oldIndext, int newIndex) {
+    if (oldIndext < newIndex) {
+      newIndex -= 1;
+    }
+    medicines.insert(newIndex, medicines.removeAt(oldIndext));
   }
 
   /*viewの追加*/
@@ -83,7 +91,7 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  //検索結果
+  //検索時のデータの表示
   Widget _searchListView() {
     return ListView.builder(
       itemCount: searchIndexMedicine.length,
@@ -111,6 +119,7 @@ class _ListPageState extends State<ListPage> {
                     }),
               ],
             ),
+            //薬のデータの内容
             child: ListTile(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -141,11 +150,16 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
+  //登録している薬のリスト表示
   Widget _defaultListView() {
-    return ListView.builder(
+    return ReorderableListView.builder(
       itemCount: medicineList.length,
+      onReorder: (int oldIndext, int newIndex) { //薬のデータの並び替え処理
+        _onReorder(medicineList, oldIndext, newIndex);
+      },
       itemBuilder: (context, index) {
         return Card(
+          key: Key('$index'),
           elevation: 20.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -202,9 +216,7 @@ class _ListPageState extends State<ListPage> {
       onTap: () async {
         await Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    MemoPage(ocrText: medicineList[index].ocrtext)));
+            MaterialPageRoute(builder: (context) => MemoPage(ocrText: medicineList[index].ocrtext)));
       },
       child: Container(
         width: 250,
@@ -244,8 +256,7 @@ class _ListPageState extends State<ListPage> {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            MemoPage(ocrText: medicineList[index].ocrtext),
+                        builder: (context) => MemoPage(ocrText: medicineList[index].ocrtext),
                         fullscreenDialog: true,
                       ),
                     );
@@ -277,7 +288,7 @@ class _ListPageState extends State<ListPage> {
                         onPressed: () {
                           setState(() {
                             _searchBoolean = true;
-                            _search;
+                            searchIndexMedicine = [];
                           });
                         })
                   ]

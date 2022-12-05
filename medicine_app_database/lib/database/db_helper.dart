@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:medicine_app_database/model/medicine.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -71,7 +70,6 @@ class MedicineData {
   }
 
   //データの検索
-  
   Future<List<Medicine>> search(String keyword) async {
     final db = await instance.database;
     var maps = await db.query(

@@ -3,18 +3,21 @@ class MedicineAlart {
   int notifyId;
   int toggle;
   String notifyTime;
+  bool isOn; 
 
   MedicineAlart({
     this.medicineId,
     this.notifyId,
     this.toggle,
     this.notifyTime,
+    this.isOn
   });
 
   Map<String, dynamic> toMap() {
     return {
       'toggle': toggle,
-      'notifyTime': notifyTime
+      'notifyTime': notifyTime,
+      'isOn':isOn == true ? 1:0 
     };
   }
 
@@ -22,5 +25,6 @@ class MedicineAlart {
     medicineId = json['medicineId'],
     notifyId = json['notifyId'],
     toggle = json['toggle'],
-    notifyTime = json['notifyTime'];
+    notifyTime = json['notifyTime'],
+    isOn = json['isOn'];
 }
