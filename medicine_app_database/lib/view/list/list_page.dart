@@ -215,8 +215,8 @@ class _ListPageState extends State<ListPage> {
     return InkWell(
       onTap: () async {
         await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MemoPage(ocrText: medicineList[index].ocrtext)));
+            context, MaterialPageRoute(builder: (context) => MemoPage(ocrText: medicineList[index].ocrtext))
+        );
       },
       child: Container(
         width: 250,
@@ -231,7 +231,7 @@ class _ListPageState extends State<ListPage> {
 
   Widget iconButtonWidget(BuildContext context, int index) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20),
+      padding: const EdgeInsets.only(right: 4),
       child: Column(
         children: [
           Container(
@@ -247,7 +247,7 @@ class _ListPageState extends State<ListPage> {
                   onPressed: () {
                     //add Edit function
                   },
-                  iconSize: 60,
+                  iconSize: 50,
                 ),
                 //ノートボタン
                 IconButton(
@@ -262,7 +262,7 @@ class _ListPageState extends State<ListPage> {
                     );
                   },
                   icon: const Icon(Icons.notes),
-                  iconSize: 60,
+                  iconSize: 50,
                 ),
               ],
             ),

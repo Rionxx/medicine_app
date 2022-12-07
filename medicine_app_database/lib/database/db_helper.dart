@@ -82,7 +82,6 @@ class MedicineData {
     return maps.map((map) => Medicine.fromMap(map)).toList();
   }
 
-  
   //データベースの挿入
   Future<int> insert(Medicine medicine) async {
     final db = await instance.database;
