@@ -14,8 +14,8 @@ class MedicineData {
 
   static Database _database;
 
-  MedicineData._privateConstructor();
-  static final MedicineData instance = MedicineData._privateConstructor();
+  MedicineData._createInstance();
+  static final MedicineData instance = MedicineData._createInstance();
 
   //データベースの参照
   Future<Database> get database async {
@@ -28,7 +28,6 @@ class MedicineData {
   Future<Database> _initDB() async {
     var dataDirectory = await getDatabasesPath();
     String path = join(dataDirectory, 'medicine.db');
-
     return await openDatabase(
       path,
       version: 1,
@@ -58,6 +57,7 @@ class MedicineData {
     return  medicinesData.map((map) => Medicine.fromMap(map)).toList();
   }
 
+  //1件ごとの薬のデータの読み込み
   Future<Medicine> medicineData(int id) async {
     final db = await instance.database;
     var medicine = [];
@@ -85,7 +85,7 @@ class MedicineData {
   //データベースの挿入
   Future<int> insert(Medicine medicine) async {
     final db = await instance.database;
-    return await db.insert(_tableName, medicine.toMap());
+    return await db.insert(_tableName, medicine.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   //データの更新

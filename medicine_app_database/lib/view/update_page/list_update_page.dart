@@ -4,37 +4,26 @@ import 'package:image_picker/image_picker.dart';
 import 'package:medicine_app_database/view/memo_page.dart';
 import 'package:medicine_app_database/database/db_helper.dart';
 import 'package:medicine_app_database/model/medicine.dart';
-import 'package:medicine_app_database/view/list/list_page.dart';
-//import 'package:medicine_app_database/model/file_controller.dart';
+import 'package:medicine_app_database/model/file_controller.dart';
 
-class ListAddPage extends StatefulWidget {
-  final Medicine medicine;
-  const ListAddPage({Key key, this.medicine}) : super(key: key);
+class ListUpdatePage extends StatefulWidget {
+  final int id;
+  
+  const ListUpdatePage({Key key, this.id}) : super(key: key);
   @override
-  State<ListAddPage> createState() => _ListAddPageState();
+  State<ListUpdatePage> createState() => _ListUpdatePageState();
 }
 
-class _ListAddPageState extends State<ListAddPage> {
+class _ListUpdatePageState extends State<ListUpdatePage> {
   XFile _pickedFile;
   String titleText;
   String ocrText = '';
   List<Medicine> medicineList = [];
 
-  // int _id;
-  // String _title;
-  // String _ocrtext;
-  // String _time;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   id = widget.medicine.id;
-  // }
-
   void _addItem() async {
-    var id = await MedicineData.instance.insert(Medicine());
+    var id = await MedicineData.instance.update(Medicine());
     setState(() {
-      medicineList.insert(id, Medicine());
+      //medicineList.update(Medicine);
     });
   }
 
@@ -209,7 +198,7 @@ class _ListAddPageState extends State<ListAddPage> {
   }
 
   //追加ボタン
-  Widget addButton() {
+  Widget updateButton() {
     return Container(
       height: 50,
       width: 200,
@@ -230,7 +219,7 @@ class _ListAddPageState extends State<ListAddPage> {
           Navigator.pop(context);
         },
         child: const Text(
-            '追加',
+            '更新',
             style: TextStyle(
               color: Colors.black, 
               fontWeight: FontWeight.bold
@@ -243,7 +232,7 @@ class _ListAddPageState extends State<ListAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.black, title: const Text('追加')),
+      appBar: AppBar(backgroundColor: Colors.black, title: const Text('更新')),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
         onTap: () => FocusScope.of(context).unfocus(),
@@ -253,7 +242,7 @@ class _ListAddPageState extends State<ListAddPage> {
               titleTextFieldView(context),
               cameraCornerView(),
               characterRecognitionCornerView(),
-              addButton()
+              updateButton()
             ],
           ),
         ),

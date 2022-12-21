@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app_database/database/db_helper.dart';
 import 'package:medicine_app_database/model/medicine.dart';
 import 'package:medicine_app_database/view/memo_page.dart';
+import 'package:medicine_app_database/view/update_page/list_update_page.dart';
 import 'list_add.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   bool _searchBoolean = false;
+  bool isLoading = false;
   List<Medicine> medicineList = [
     Medicine(
         id: 0,
@@ -25,17 +28,41 @@ class _ListPageState extends State<ListPage> {
         image: 'lib/images/sample2.jpg',
         time: '8月14日(水)',
         ocrtext: '博多病院'),
+    Medicine(
+        id: 2,
+        title: '平山病院',
+        image: 'lib/images/sample3.jpg',
+        time: '8月14日(水)',
+        ocrtext: '博多病院'),
   ];
   List<int> searchIndexMedicine = [];
   //DateTime _lastChangedDate = DateTime.now();
 
+  List<String> keywordStorage = [];
+  final controller = TextEditingController();
+  String word = "";
+  String value = '';
+
   /*関数の追加*/
+  //データの取得
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getMedicineList();
+  // }
+
+  // Future getMedicineList() async {
+  //   setState(() => isLoading = true);
+  //   medicineList = await MedicineData.instance.loadAllMedicine();
+  //   setState(() => isLoading = false);
+  // }
+
   //データの削除
   void _deleteItem(id) async {
     MedicineData.instance.delete;
     setState(() {
       medicineList.removeWhere((element) => element.id == id);
-      print(id);
+      print("Delete Success $id");
     });
   }
 
@@ -44,6 +71,7 @@ class _ListPageState extends State<ListPage> {
     MedicineData.instance.search;
     setState(() {
       searchIndexMedicine = [];
+      _searchBoolean = true;
       for (int i = 0; i < medicineList.length; i++) {
         if (medicineList[i].title.contains(keyword)) {
           searchIndexMedicine.add(i);
@@ -64,6 +92,7 @@ class _ListPageState extends State<ListPage> {
   /*viewの追加*/
   Widget _searchTextField() {
     return TextField(
+      controller: controller,
       onChanged: _search,
       autofocus: true, //TextFieldが表示されるときにフォーカスする（キーボードを表示する）
       cursorColor: Colors.white, //カーソルの色
@@ -91,8 +120,8 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  //検索時のデータの表示
-  Widget _searchListView() {
+  //データの検索結果の表示
+  Widget _searchResultView() {
     return ListView.builder(
       itemCount: searchIndexMedicine.length,
       itemBuilder: (context, index) {
@@ -154,7 +183,8 @@ class _ListPageState extends State<ListPage> {
   Widget _defaultListView() {
     return ReorderableListView.builder(
       itemCount: medicineList.length,
-      onReorder: (int oldIndext, int newIndex) { //薬のデータの並び替え処理
+      onReorder: (int oldIndext, int newIndex) {
+        //薬のデータの並び替え処理
         _onReorder(medicineList, oldIndext, newIndex);
       },
       itemBuilder: (context, index) {
@@ -215,8 +245,10 @@ class _ListPageState extends State<ListPage> {
     return InkWell(
       onTap: () async {
         await Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MemoPage(ocrText: medicineList[index].ocrtext))
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    MemoPage(ocrText: medicineList[index].ocrtext)));
       },
       child: Container(
         width: 250,
@@ -230,6 +262,7 @@ class _ListPageState extends State<ListPage> {
   }
 
   Widget iconButtonWidget(BuildContext context, int index) {
+    final medicine = medicineList[index];
     return Padding(
       padding: const EdgeInsets.only(right: 4),
       child: Column(
@@ -244,8 +277,15 @@ class _ListPageState extends State<ListPage> {
                 IconButton(
                   icon: const Icon(Icons.edit),
                   color: Colors.black,
-                  onPressed: () {
+                  onPressed: () async {
                     //add Edit function
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ListUpdatePage(id: medicine.id),
+                        fullscreenDialog: true,
+                      ),
+                    );
+                    //getMedicineList();
                   },
                   iconSize: 50,
                 ),
@@ -256,7 +296,8 @@ class _ListPageState extends State<ListPage> {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MemoPage(ocrText: medicineList[index].ocrtext),
+                        builder: (context) =>
+                            MemoPage(ocrText: medicineList[index].ocrtext),
                         fullscreenDialog: true,
                       ),
                     );
@@ -302,7 +343,7 @@ class _ListPageState extends State<ListPage> {
                         })
                   ],
           ),
-          body: !_searchBoolean ? _defaultListView() : _searchListView(),
+          body: !_searchBoolean ? _defaultListView() : _searchResultView(),
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.black,
             onPressed: () async {
@@ -313,6 +354,7 @@ class _ListPageState extends State<ListPage> {
                   fullscreenDialog: true,
                 ),
               );
+              //getMedicineList();
             },
             tooltip: 'Increment',
             child: const Icon(Icons.add),

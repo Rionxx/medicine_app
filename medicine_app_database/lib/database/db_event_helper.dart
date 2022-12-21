@@ -8,6 +8,7 @@ class EventData {
   final String _amountDrink_TableName= 'MedicineAmountDrink';
   final String _alart_TableName = 'MedicineAlart';
   final String _medicineId = 'medicineId';
+  final String _medicineName = 'medicineName';
   final String _drinkDate = 'drinkDate';
   final String _morningTime = 'morningTime';
   final String _lanchTime = 'lanchTime';
@@ -43,6 +44,7 @@ class EventData {
     String sqlAmountDrink = '''
       CREATE TABLE $_amountDrink_TableName(
         $_medicineId INTEGER PRIMARY KEY,
+        $_medicineName TEXT
         $_drinkDate TEXT,
         $_morningTime TEXT,
         $_lanchTime TEXT,
@@ -57,7 +59,7 @@ class EventData {
         $_notifyId INTEGER PRIMARY KEY,
         $_toggle INTEGER PRIMARY KEY,
         $_notifyTime TEXT,
-        $_isOn INTEGER PRIMARY KEY
+        $_isOn BOOLEAN
       )
     ''';
 
@@ -67,9 +69,33 @@ class EventData {
   Future<List<MedicineEvent>> queryAll() async {
     Database db = await instance.database;
     var eventJoin = await db.query(
-      'SELECT * FROM $_amountDrink_TableName INNER JOIN $_alart_TableName ON $_amountDrink_TableName.$_medicineId = $_alart_TableName.$_notifyId'
+      'SELECT * FROM $_amountDrink_TableName INNER JOIN $_alart_TableName ON $_amountDrink_TableName.$_medicineId = $_alart_TableName.$_medicineId'
     );
 
     return eventJoin.map((map) => MedicineEvent.fromMap(map)).toList();
+  }
+
+  Future<int> insert(MedicineEvent event) async {
+    final db = await instance.database;
+    return await db.insert(_amountDrink_TableName + _alart_TableName, event.toMap());
+  }
+
+  Future update(MedicineEvent event) async {
+    final db = await instance.database;
+    return await db.update(
+      _amountDrink_TableName + _alart_TableName,
+      event.toMap(), 
+      where: '$_medicineId = ?',
+      whereArgs: [event.medicineId]
+    );
+  }
+
+  Future delete(MedicineEvent event) async {
+    final db = await instance.database;
+    return await db.delete(
+      _amountDrink_TableName + _alart_TableName,
+      where: '$_medicineId = ?',
+      whereArgs: [event.medicineId],
+    );
   }
 }

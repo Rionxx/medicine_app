@@ -1,6 +1,7 @@
 class MedicineEvent {
   //飲む量と時間帯のデータ
   int medicineId;
+  String medicineName;
   String drinkDate;
   String morningTime;
   String lanchTime;
@@ -15,6 +16,7 @@ class MedicineEvent {
 
   MedicineEvent({
     this.medicineId,
+    this.medicineName,
     this.drinkDate,
     this.morningTime,
     this.lanchTime,
@@ -28,6 +30,7 @@ class MedicineEvent {
 
   Map<String, dynamic> toMap() {
     return {
+      'medicine': medicineName,
       'drinkDate': drinkDate,
       'morningTime': morningTime,
       'lanchTime': lanchTime,
@@ -41,6 +44,7 @@ class MedicineEvent {
 
   MedicineEvent.fromMap(Map json) :
     medicineId = json['medicineId'],
+    medicineName = json['medicineName'],
     drinkDate = json['drinkDate'],
     morningTime = json['morningTime'],
     lanchTime = json['lanchTime'],

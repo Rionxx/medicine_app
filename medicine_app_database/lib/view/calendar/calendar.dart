@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:medicine_app_database/view/calendar/notify_add.dart';
+import 'package:medicine_app_database/view/calendar/event_add.dart';
 
 DateTime _focused = DateTime.now();
+DateTime _selected;
 
 class CalendarPage extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarState extends State<CalendarPage> {
   int _counter = 0;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,17 @@ class _CalendarState extends State<CalendarPage> {
         child: TableCalendar(
           firstDay: DateTime.utc(2022, 4, 1),
           lastDay: DateTime.utc(2025, 12, 31),
+          selectedDayPredicate: (day) {
+            return isSameDay(_selected, day);
+          },
+          onDaySelected: (selected, focused) {
+            if (!isSameDay(_selected, selected)) {
+              setState(() {
+                _selected = selected;
+                _focused = focused;
+              });
+            }
+          },
           focusedDay: _focused,
         ),
       ),
@@ -33,7 +46,7 @@ class _CalendarState extends State<CalendarPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NotifyAddPage(),
+                  builder: (context) => EventAddPage(),
                   fullscreenDialog: true,
                 ),
               );

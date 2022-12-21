@@ -28,6 +28,4 @@ class Medicine {
       title = json['title'],
       ocrtext = json['ocrtext'],
       time = json['time'];
-
-  contains(String keyword) {}
 }
