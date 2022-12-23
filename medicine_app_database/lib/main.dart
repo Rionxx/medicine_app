@@ -24,17 +24,17 @@ class _HomePageState extends State<HomePage> {
   //アイテムbottom
   Widget _bottomNavigationBarView(BuildContext context) {
     return BottomNavigationBar(
-      unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 14),
+      unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 24),
       fixedColor: Colors.black,
       onTap: _onItemTapped,
       items: const<BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.list_alt),
-          label: 'リスト',
+          icon: Icon(Icons.list_alt, size: 36),
+          label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_today),
-          label: 'カレンダー',
+          icon: Icon(Icons.calendar_today, size: 36),
+          label: '',
         ),
       ],
     );

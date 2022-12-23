@@ -12,6 +12,36 @@ class EventAddPage extends StatefulWidget {
 
 class _EventAddPageState extends State<EventAddPage> {
   String dateText;
+  String isSelectedAmountValue = "1個";
+  String isSelectedTimeMorningValue = "6時";
+  String isSelectedTimeLunchValue = "12時";
+  String isSelectedTimeNightValue = "18時";
+  final isSelectedAmountValueList = <String>["1個", "2個", "3個", "4個", "5個"];
+  final isSelectedTimeMorningValueList = <String>[
+    "6時",
+    "7時",
+    "8時",
+    "9時",
+    "10時",
+    "11時"
+  ];
+  final isSelectedTimeLunchValueList = <String>[
+    "12時",
+    "13時",
+    "14時",
+    "15時",
+    "16時",
+    "17時"
+  ];
+  final isSelectedTimeNightValueList = <String>[
+    "18時",
+    "19時",
+    "20時",
+    "21時",
+    "22時",
+    "23時"
+  ];
+
   bool isOn = false;
 
   //タイトル入力フォーム
@@ -68,6 +98,7 @@ class _EventAddPageState extends State<EventAddPage> {
           height: 60,
           width: 280,
           decoration: BoxDecoration(
+            color: Colors.white,
             border: Border.all(width: 5),
             borderRadius: BorderRadius.circular(20),
           ),
@@ -81,8 +112,6 @@ class _EventAddPageState extends State<EventAddPage> {
                 width: 250,
                 child: TextField(
                   decoration: const InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
                     border: InputBorder.none,
                     hintText: "日付",
                   ),
@@ -100,35 +129,242 @@ class _EventAddPageState extends State<EventAddPage> {
 
   //飲む時間帯と量の入力フォーム
   Widget medicineDropDownForm(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20, right: 200),
+      child: Column(
         children: [
-          Container(
-            child: const Text("朝"),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 30,
-                  width: 280,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    '朝', 
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              alignment: Alignment.center,
+              height: 30,
+              width: 80,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                '朝',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
+            ),
+          ),
+
+          //エラー：テキストのピクセルオーバーフロー
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              SizedBox(width: 50),
+              Text("時間",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              SizedBox(width: 150),
+              Text("服用量",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
             ],
           ),
+
+          //朝の飲む時間と服用量のドロップダウン
+          Row(children: <Widget>[
+            Container(
+              width: 200,
+              decoration: BoxDecoration(
+                //朝の時間帯のドロップダウン
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: DropdownButton<String>(
+                underline: Container(),
+                value: isSelectedTimeMorningValue,
+                items: isSelectedTimeMorningValueList
+                    .map((String morning) => DropdownMenuItem(
+                          value: morning,
+                          child: Text(morning),
+                        ))
+                    .toList(),
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (String value) {
+                  setState(() {
+                    isSelectedTimeMorningValue = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              width: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: DropdownButton<String>(
+                //朝の服用量のドロップダウン
+                underline: Container(),
+                value: isSelectedAmountValue,
+                items: isSelectedAmountValueList
+                    .map((String amount) => DropdownMenuItem(
+                          value: amount,
+                          child: Text(amount),
+                        ))
+                    .toList(),
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (String value) {
+                  setState(() {
+                    isSelectedAmountValue = value;
+                  });
+                },
+              ),
+            ),
+          ]),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              alignment: Alignment.center,
+              height: 30,
+              width: 80,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                '昼',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+
+          //昼の飲む時間と服用量のドロップダウン
+          Row(children: <Widget>[
+            Container(
+              width: 200,
+              decoration: BoxDecoration(
+                //昼の時間帯のドロップダウン
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: DropdownButton<String>(
+                underline: Container(),
+                value: isSelectedTimeLunchValue,
+                items: isSelectedTimeLunchValueList
+                    .map((String lunch) => DropdownMenuItem(
+                          value: lunch,
+                          child: Text(lunch),
+                        ))
+                    .toList(),
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (String value) {
+                  setState(() {
+                    isSelectedTimeLunchValue = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              width: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: DropdownButton<String>(
+                //昼の服用量のドロップダウン
+                underline: Container(),
+                value: isSelectedAmountValue,
+                items: isSelectedAmountValueList
+                    .map((String amount) => DropdownMenuItem(
+                          value: amount,
+                          child: Text(amount),
+                        ))
+                    .toList(),
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (String value) {
+                  setState(() {
+                    isSelectedAmountValue = value;
+                  });
+                },
+              ),
+            ),
+          ]),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              alignment: Alignment.center,
+              height: 30,
+              width: 80,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                '夜',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+
+          //夜に飲む時間帯と服用量のドロップダウン
+          Row(children: <Widget>[
+            Container(
+              width: 200,
+              decoration: BoxDecoration(
+                //夜の時間帯のドロップダウン
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: DropdownButton<String>(
+                underline: Container(),
+                value: isSelectedTimeNightValue,
+                items: isSelectedTimeNightValueList
+                    .map((String night) => DropdownMenuItem(
+                          value: night,
+                          child: Text(night),
+                        ))
+                    .toList(),
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (String value) {
+                  setState(() {
+                    isSelectedTimeNightValue = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              width: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: DropdownButton<String>(
+                //朝の服用量のドロップダウン
+                underline: Container(),
+                alignment: Alignment.center,
+                value: isSelectedAmountValue,
+                items: isSelectedAmountValueList
+                    .map((String amount) => DropdownMenuItem(
+                          value: amount,
+                          child: Text(amount),
+                        ))
+                    .toList(),
+                icon: const Icon(Icons.arrow_downward),
+                onChanged: (String value) {
+                  setState(() {
+                    isSelectedAmountValue = value;
+                  });
+                },
+              ),
+            ),
+          ]),
         ],
       ),
     );
@@ -198,6 +434,7 @@ class _EventAddPageState extends State<EventAddPage> {
               ),
               child: const Text(
                 '通知',
+                textAlign: TextAlign.right,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -205,24 +442,77 @@ class _EventAddPageState extends State<EventAddPage> {
               ),
             ),
           ),
-          const Align(
-            alignment: Alignment.topRight,
-            child: Text("通知"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Text("通知",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              const SizedBox(width: 10),
+              CupertinoSwitch(
+                  value: isOn,
+                  onChanged: (bool value) {
+                    if (value != null) {
+                      setState(() {
+                        isOn = value;
+                      });
+                    }
+                  })
+            ],
           ),
-          ListTile(
-            //title: const Text("通知"),
-            trailing: CupertinoSwitch(
-                value: isOn,
-                onChanged: (bool value) {
-                  if (value != null) {
-                    setState(() {
-                      isOn = value;
-                    });
-                  }
-                }),
+          const Padding(
+            padding: EdgeInsets.only(right: 160),
+            child: Text(
+              '通知時間',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
           ),
-          const Align(alignment: Alignment.centerLeft, child: Text("通知時間")),
+          timeAgoTextFieldView(context)
         ]),
+      ),
+    );
+  }
+
+  Widget timeAgoTextFieldView(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 20,
+          bottom: 20,
+        ),
+        child: Container(
+          height: 60,
+          width: 280,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(width: 5),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                width: 250,
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "時間",
+                  ),
+                  onChanged: (dateText) {
+                    dateText = dateText;
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

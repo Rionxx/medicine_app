@@ -82,11 +82,11 @@ class _ListPageState extends State<ListPage> {
   }
 
   //並び替え処理の関数
-  void _onReorder(List<Medicine> medicines, int oldIndext, int newIndex) {
-    if (oldIndext < newIndex) {
+  void _onReorder(List<Medicine> medicines, int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    medicines.insert(newIndex, medicines.removeAt(oldIndext));
+    medicines.insert(newIndex, medicines.removeAt(oldIndex));
   }
 
   /*viewの追加*/
@@ -350,7 +350,7 @@ class _ListPageState extends State<ListPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListAddPage(),
+                  builder: (context) => const ListAddPage(),
                   fullscreenDialog: true,
                 ),
               );
