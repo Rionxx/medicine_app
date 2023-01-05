@@ -4,12 +4,12 @@ import 'package:medicine_app_database/model/medicine_event.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-class EventData {
-  final String _amountDrink_TableName= 'MedicineAmountDrink';
-  final String _alart_TableName = 'MedicineAlart';
-  final String _medicineId = 'medicineId';
-  final String _medicineName = 'medicineName';
-  final String _drinkDate = 'drinkDate';
+
+  const String _amountDrink_TableName= 'MedicineAmountDrink';
+  const String _alart_TableName = 'MedicineAlart';
+  const String _medicineId = 'medicineId';
+  const String _medicineName = 'medicineName';
+  const String _drinkDate = 'drinkDate';
   final String _morningTime = 'morningTime';
   final String _lanchTime = 'lanchTime';
   final String _nightTime = 'nightTime';
@@ -18,15 +18,17 @@ class EventData {
   final String _toggle = 'toggle';
   final String _notifyTime = 'notifyTime';
   final String _isOn = 'isOn';
+class EventData {
   
-  static Database _database;
+  
+  static Database? _database;
   EventData._privateConstructor();
   static final EventData instance = EventData._privateConstructor();
 
   Future<Database> get database async {
-    if (_database != null) return _database;
+    if (_database != null) return _database!;
     _database = await _initDB();
-    return _database;
+    return _database!;
   }
 
   Future<Database> _initDB() async {

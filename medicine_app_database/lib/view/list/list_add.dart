@@ -8,34 +8,44 @@ import 'package:medicine_app_database/view/list/list_page.dart';
 //import 'package:medicine_app_database/model/file_controller.dart';
 
 class ListAddPage extends StatefulWidget {
-  final Medicine medicine;
-  const ListAddPage({Key key, this.medicine}) : super(key: key);
+  final Medicine? medicine;
+  const ListAddPage({Key? key, this.medicine}) : super(key: key);
   @override
   State<ListAddPage> createState() => _ListAddPageState();
 }
 
 class _ListAddPageState extends State<ListAddPage> {
-  XFile _pickedFile;
-  String titleText;
+  XFile? _pickedFile;
+  late String titleText;
   String ocrText = '';
   List<Medicine> medicineList = [];
 
-  // int _id;
-  // String _title;
-  // String _ocrtext;
-  // String _time;
+  late int _id;
+  late String _title;
+  late String _image;
+  late String _ocrtext;
+  late String _time;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   id = widget.medicine.id;
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _id = widget.medicine?.id ?? 0;
+    _title = widget.medicine?.title ?? '';
+    _image = widget.medicine?.image ?? '';
+    _ocrtext = widget.medicine?.ocrtext ?? '';
+    _time = widget.medicine?.time ?? '';
+  }
 
   void _addItem() async {
-    var id = await MedicineData.instance.insert(Medicine());
-    setState(() {
-      medicineList.insert(id, Medicine());
-    });
+    final medicine = Medicine(
+      id: _id,
+      title: _title,
+      image: _image,
+      ocrtext: _ocrtext,
+      time: _time
+    );
+
+    await MedicineData.instance.insert(medicine);
   }
 
   //タイトル入力フォーム
@@ -115,9 +125,10 @@ class _ListAddPageState extends State<ListAddPage> {
             child: InkWell(
               onTap: () async {
                 //カメラを起動
+                
               },
               child: _pickedFile != null
-                  ? Image.file(File(_pickedFile.path))
+                  ? Image.file(File(_pickedFile!.path))
                   : Container(
                       child: Icon(Icons.camera_alt),
                       decoration: BoxDecoration(

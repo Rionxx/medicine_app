@@ -9,23 +9,18 @@ import 'package:medicine_app_database/model/file_controller.dart';
 class ListUpdatePage extends StatefulWidget {
   final int id;
   
-  const ListUpdatePage({Key key, this.id}) : super(key: key);
+  const ListUpdatePage({Key? key, required this.id}) : super(key: key);
   @override
   State<ListUpdatePage> createState() => _ListUpdatePageState();
 }
 
 class _ListUpdatePageState extends State<ListUpdatePage> {
-  XFile _pickedFile;
-  String titleText;
+  late XFile _pickedFile;
+  late String titleText;
   String ocrText = '';
   List<Medicine> medicineList = [];
 
-  void _addItem() async {
-    var id = await MedicineData.instance.update(Medicine());
-    setState(() {
-      //medicineList.update(Medicine);
-    });
-  }
+  
 
   //タイトル入力フォーム
   Widget titleTextFieldView(BuildContext context) {
@@ -215,7 +210,6 @@ class _ListUpdatePageState extends State<ListUpdatePage> {
         ),
         onPressed: () async {
           //データを追加する関数
-          _addItem();
           Navigator.pop(context);
         },
         child: const Text(

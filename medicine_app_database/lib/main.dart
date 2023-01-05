@@ -3,10 +3,11 @@ import 'package:medicine_app_database/view/list/list_page.dart';
 import 'package:medicine_app_database/view/calendar/calendar.dart';
 
 void main() {
-  runApp(HomePage());
+  runApp(const HomePage());
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();

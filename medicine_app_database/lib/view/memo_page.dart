@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MemoPage extends StatefulWidget {
-  MemoPage({Key key, this.ocrText}) : super(key: key) {
+  MemoPage({Key? key, required this.ocrText}) : super(key: key) {
     ocrTextController.text = ocrText;
   }
   String ocrText;

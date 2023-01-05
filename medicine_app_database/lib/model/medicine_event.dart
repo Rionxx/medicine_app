@@ -1,6 +1,6 @@
 class MedicineEvent {
   //飲む量と時間帯のデータ
-  int medicineId;
+  int? medicineId;
   String medicineName;
   String drinkDate;
   String morningTime;
@@ -9,22 +9,22 @@ class MedicineEvent {
   String amountDrink;
 
   //通知のデータ
-  int notifyId;
+  int? notifyId;
   int toggle;
   String notifyTime;
-  bool isOn;
+  bool? isOn;
 
   MedicineEvent({
     this.medicineId,
-    this.medicineName,
-    this.drinkDate,
-    this.morningTime,
-    this.lanchTime,
-    this.nightTime,
-    this.amountDrink,
+    required this.medicineName,
+    required this.drinkDate,
+    required this.morningTime,
+    required this.lanchTime,
+    required this.nightTime,
+    required this.amountDrink,
     this.notifyId,
-    this.toggle,
-    this.notifyTime,
+    required this.toggle,
+    required this.notifyTime,
     this.isOn
   });
 

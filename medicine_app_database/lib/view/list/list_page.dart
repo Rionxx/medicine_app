@@ -45,24 +45,24 @@ class _ListPageState extends State<ListPage> {
 
   /*関数の追加*/
   //データの取得
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getMedicineList();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    getMedicineList();
+  }
 
-  // Future getMedicineList() async {
-  //   setState(() => isLoading = true);
-  //   medicineList = await MedicineData.instance.loadAllMedicine();
-  //   setState(() => isLoading = false);
-  // }
+  Future getMedicineList() async {
+    setState(() => isLoading = true);
+    medicineList = await MedicineData.instance.loadAllMedicine();
+    setState(() => isLoading = false);
+  }
 
   //データの削除
   void _deleteItem(id) async {
     MedicineData.instance.delete;
     setState(() {
       medicineList.removeWhere((element) => element.id == id);
-      print("Delete Success $id");
+      print("Delete Success id Number $id");
     });
   }
 
@@ -281,11 +281,11 @@ class _ListPageState extends State<ListPage> {
                     //add Edit function
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => ListUpdatePage(id: medicine.id),
+                        builder: (context) => ListUpdatePage(id: medicine.id!),
                         fullscreenDialog: true,
                       ),
                     );
-                    //getMedicineList();
+                    getMedicineList();
                   },
                   iconSize: 50,
                 ),
@@ -350,11 +350,11 @@ class _ListPageState extends State<ListPage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ListAddPage(),
+                  builder: (context) => ListAddPage(),
                   fullscreenDialog: true,
                 ),
               );
-              //getMedicineList();
+              getMedicineList();
             },
             tooltip: 'Increment',
             child: const Icon(Icons.add),

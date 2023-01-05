@@ -11,7 +11,7 @@ class EventAddPage extends StatefulWidget {
 }
 
 class _EventAddPageState extends State<EventAddPage> {
-  String dateText;
+  String? dateText;
   String isSelectedAmountValue = "1個";
   String isSelectedTimeMorningValue = "6時";
   String isSelectedTimeLunchValue = "12時";
@@ -130,11 +130,11 @@ class _EventAddPageState extends State<EventAddPage> {
   //飲む時間帯と量の入力フォーム
   Widget medicineDropDownForm(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20, right: 200),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(bottom: 10, right: 200),
             child: Container(
               alignment: Alignment.center,
               height: 30,
@@ -154,29 +154,37 @@ class _EventAddPageState extends State<EventAddPage> {
           ),
 
           //エラー：テキストのピクセルオーバーフロー
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              SizedBox(width: 50),
-              Text("時間",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              SizedBox(width: 150),
-              Text("服用量",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
-            ],
+          Padding(
+            padding: const EdgeInsets.only(right: 40),
+            child: Row(
+              children: const [
+                SizedBox(width: 30),
+                Text("時間",
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                SizedBox(width: 150),
+                Text("服用量",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+              ],
+            ),
           ),
+          const SizedBox(height: 10),
 
           //朝の飲む時間と服用量のドロップダウン
           Row(children: <Widget>[
+            const SizedBox(width: 30),
             Container(
-              width: 200,
+              width: 170,
               decoration: BoxDecoration(
                 //朝の時間帯のドロップダウン
                 color: Colors.white,
                 border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton<String>(
+                alignment: Alignment.bottomRight,
                 underline: Container(),
+                isExpanded: false,
                 value: isSelectedTimeMorningValue,
                 items: isSelectedTimeMorningValueList
                     .map((String morning) => DropdownMenuItem(
@@ -185,9 +193,9 @@ class _EventAddPageState extends State<EventAddPage> {
                         ))
                     .toList(),
                 icon: const Icon(Icons.arrow_downward),
-                onChanged: (String value) {
+                onChanged: (String? value) {
                   setState(() {
-                    isSelectedTimeMorningValue = value;
+                    isSelectedTimeMorningValue = value!;
                   });
                 },
               ),
@@ -198,6 +206,7 @@ class _EventAddPageState extends State<EventAddPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton<String>(
                 //朝の服用量のドロップダウン
@@ -206,21 +215,22 @@ class _EventAddPageState extends State<EventAddPage> {
                 items: isSelectedAmountValueList
                     .map((String amount) => DropdownMenuItem(
                           value: amount,
-                          child: Text(amount),
+                          child: Text(amount, textAlign: TextAlign.right),
                         ))
                     .toList(),
                 icon: const Icon(Icons.arrow_downward),
-                onChanged: (String value) {
+                onChanged: (String? value) {
                   setState(() {
-                    isSelectedAmountValue = value;
+                    isSelectedAmountValue = value!;
                   });
                 },
               ),
             ),
           ]),
+          const SizedBox(height: 15),
 
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(bottom: 10, right: 200),
             child: Container(
               alignment: Alignment.center,
               height: 30,
@@ -241,12 +251,14 @@ class _EventAddPageState extends State<EventAddPage> {
 
           //昼の飲む時間と服用量のドロップダウン
           Row(children: <Widget>[
+            const SizedBox(width: 30),
             Container(
-              width: 200,
+              width: 170,
               decoration: BoxDecoration(
                 //昼の時間帯のドロップダウン
                 color: Colors.white,
                 border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton<String>(
                 underline: Container(),
@@ -258,9 +270,9 @@ class _EventAddPageState extends State<EventAddPage> {
                         ))
                     .toList(),
                 icon: const Icon(Icons.arrow_downward),
-                onChanged: (String value) {
+                onChanged: (String? value) {
                   setState(() {
-                    isSelectedTimeLunchValue = value;
+                    isSelectedTimeLunchValue = value!;
                   });
                 },
               ),
@@ -271,6 +283,7 @@ class _EventAddPageState extends State<EventAddPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton<String>(
                 //昼の服用量のドロップダウン
@@ -283,17 +296,18 @@ class _EventAddPageState extends State<EventAddPage> {
                         ))
                     .toList(),
                 icon: const Icon(Icons.arrow_downward),
-                onChanged: (String value) {
+                onChanged: (String? value) {
                   setState(() {
-                    isSelectedAmountValue = value;
+                    isSelectedAmountValue = value!;
                   });
                 },
               ),
             ),
           ]),
+          const SizedBox(height: 15),
 
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(bottom: 10, right: 200),
             child: Container(
               alignment: Alignment.center,
               height: 30,
@@ -314,12 +328,14 @@ class _EventAddPageState extends State<EventAddPage> {
 
           //夜に飲む時間帯と服用量のドロップダウン
           Row(children: <Widget>[
+            const SizedBox(width: 30),
             Container(
-              width: 200,
+              width: 170,
               decoration: BoxDecoration(
                 //夜の時間帯のドロップダウン
                 color: Colors.white,
                 border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton<String>(
                 underline: Container(),
@@ -331,9 +347,9 @@ class _EventAddPageState extends State<EventAddPage> {
                         ))
                     .toList(),
                 icon: const Icon(Icons.arrow_downward),
-                onChanged: (String value) {
+                onChanged: (String? value) {
                   setState(() {
-                    isSelectedTimeNightValue = value;
+                    isSelectedTimeNightValue = value!;
                   });
                 },
               ),
@@ -344,6 +360,7 @@ class _EventAddPageState extends State<EventAddPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: DropdownButton<String>(
                 //朝の服用量のドロップダウン
@@ -357,9 +374,9 @@ class _EventAddPageState extends State<EventAddPage> {
                         ))
                     .toList(),
                 icon: const Icon(Icons.arrow_downward),
-                onChanged: (String value) {
+                onChanged: (String? value) {
                   setState(() {
-                    isSelectedAmountValue = value;
+                    isSelectedAmountValue = value!;
                   });
                 },
               ),
@@ -375,7 +392,7 @@ class _EventAddPageState extends State<EventAddPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Container(
-        height: 500,
+        height: 550,
         width: 350,
         decoration: BoxDecoration(
           color: Colors.pink[50],

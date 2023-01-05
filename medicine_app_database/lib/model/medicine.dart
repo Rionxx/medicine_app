@@ -1,5 +1,5 @@
 class Medicine {
-  int id;
+  int? id;
   String title;
   String image;
   String ocrtext;
@@ -7,11 +7,25 @@ class Medicine {
 
   Medicine({
     this.id, 
-    this.title, 
-    this.image,
-    this.ocrtext,
-    this.time,
+    required this.title, 
+    required this.image,
+    required this.ocrtext,
+    required this.time,
   });
+
+  Medicine copy({
+    int? id,
+    String? title,
+    String? image,
+    String? ocrtext,
+    String? time
+  }) => Medicine(
+    id: this.id,
+    title: this.title,
+    image: this.image,
+    ocrtext: this.ocrtext,
+    time: this.time
+  );
 
   Map<String, dynamic> toMap() {
     return {

@@ -4,24 +4,33 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class MedicineData {
-  final String _id = 'id';
-  final String _tableName = "Medicine";
-  final String _title = 'title';
-  final String _image = 'image';
-  final String _ocrtext = 'ocrtext';
-  final String _time = 'time';
+  const String _id = 'id';
+  const  String _tableName = "Medicine";
+  const String _title = 'title';
+  const String _image = 'image';
+  const String _ocrtext = 'ocrtext';
+  const String _time = 'time';
 
-  static Database _database;
+  final List<String> columns= [
+    _id,
+    _title,
+    _image,
+    _ocrtext,
+    _time
+  ];
+
+class MedicineData {
+
+  static Database? _database;
 
   MedicineData._createInstance();
   static final MedicineData instance = MedicineData._createInstance();
 
   //データベースの参照
   Future<Database> get database async {
-    if (_database != null) return _database;
+    if (_database != null) return _database!;
     _database = await _initDB();
-    return _database;
+    return _database!;
   }
 
   //データベースの初期化
@@ -63,6 +72,7 @@ class MedicineData {
     var medicine = [];
     medicine = await db.query(
       'medicine',
+      columns: columns,
       where: '$_id = ?',
       whereArgs: [id],
     );
