@@ -4,6 +4,7 @@ import 'package:kenkyuu_medicine/Calendar/calendar_add_model.dart';
 import 'package:kenkyuu_medicine/List/list_add_model.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+import "package:intl/intl.dart";
 
 class CalendarAddPage extends StatelessWidget {
   final notificationTimebars = [
@@ -53,15 +54,22 @@ class CalendarAddPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 12, bottom: 20),
       child: TextField(
-        onChanged: (String titleText) {
-          model.setTitleText = titleText;
-        },
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           hintText: "お薬を入力",
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(
+              borderSide: BorderSide(width: 30),
+              borderRadius: BorderRadius.all(Radius.circular(25.0))),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 3),
+              borderRadius: BorderRadius.all(Radius.circular(25.0))),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 3),
               borderRadius: BorderRadius.all(Radius.circular(25.0))),
         ),
+        onChanged: (String titleText) {
+          model.setTitleText = titleText;
+        },
       ),
     );
   }
@@ -109,10 +117,10 @@ class CalendarAddPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(model.titleText),
+                          Expanded(flex: 2, child: Text(model.dateText)),
                           IconButton(
                               onPressed: () {
-                                _detePicker(context, model);
+                                _datePicker(context, model);
                               },
                               icon: Icon(Icons.calendar_month))
                         ],
@@ -672,14 +680,15 @@ class CalendarAddPage extends StatelessWidget {
         ));
   }
 
-  _detePicker(BuildContext context, CalnedarAddModel model) async {
+  _datePicker(BuildContext context, CalnedarAddModel model) async {
     final DateTime? datePicked = await showDatePicker(
         context: context,
-        initialDate: model.toDay,
+        initialDate: DateTime.now(),
         firstDate: DateTime(2003),
-        lastDate: DateTime(2023));
+        lastDate: DateTime(2030));
     if (datePicked != null && datePicked != model.toDay) {
-      model.setTimeText = datePicked.toString();
+      final formatter = DateFormat('yyyy/MM/dd(E)', "ja");
+      model.setTimeText = formatter.format(datePicked);
     }
   }
 

@@ -35,8 +35,11 @@ class CalnedarAddModel extends ChangeNotifier {
 
   String get dateText => _dateText;
   String get titleText => _titleText;
+  // 朝の服用量
   String get morningDoasgeText => _morningDoasgeText;
+  //昼の服用量
   String get noonDoasgeText => _noonDoasgeText;
+  //夜の服用量
   String get nightDoasgeText => _nightDoasgeText;
 
   set setTitleText(String titleText) {
@@ -115,6 +118,7 @@ class CalnedarAddModel extends ChangeNotifier {
     while (notificationIdList!
         .any((notificationId) => morningTimeId == notificationId)) {
       morningTimeId = Random().nextInt(10000);
+      noonTimeId = Random().nextInt(1000);
     }
   }
 
@@ -128,16 +132,14 @@ class CalnedarAddModel extends ChangeNotifier {
       String? morningDrinkTimeText,
       String? noonDrinkTimeText,
       String? nigthDrinkTimeText}) {
-    if (morningDrinkTimeText!.isEmpty && time!.isEmpty) {
-      morningDrinkTime = DateTime.parse(time + morningDrinkTimeText);
-    } else if (noonDrinkTimeText!.isEmpty && time!.isEmpty) {
-      noonDrinkTime = DateTime.parse(time + noonDrinkTimeText);
-    } else if (nigthDrinkTimeText!.isEmpty && time!.isEmpty) {
-      nigthDrinkTime = DateTime.parse(time + nigthDrinkTimeText);
-    } else {
-      morningDrinkTime = DateTime.parse(time! + morningDrinkTimeText);
-      noonDrinkTime = DateTime.parse(time + noonDrinkTimeText);
-      nigthDrinkTime = DateTime.parse(time + nigthDrinkTimeText);
+    if (time!.isEmpty) {
+      if (morningDrinkTimeText!.isEmpty) {
+        morningDrinkTime = DateTime.parse(time + morningDrinkTimeText);
+      } else if (noonDrinkTimeText!.isEmpty) {
+        noonDrinkTime = DateTime.parse(time + noonDrinkTimeText);
+      } else if (nigthDrinkTimeText!.isEmpty) {
+        nigthDrinkTime = DateTime.parse(time + nigthDrinkTimeText);
+      }
     }
   }
 
@@ -251,7 +253,11 @@ class CalnedarAddModel extends ChangeNotifier {
       throw ('日時が設定されていません');
     }
     if (isOn == true) {
-      covertDataTime();
+      covertDataTime(
+          time: dateText,
+          morningDrinkTimeText: morningDrinkTimeText,
+          noonDrinkTimeText: noonDrinkTimeText,
+          nigthDrinkTimeText: nigthDrinkTimeText);
       if (morningDrinkTimeText.isEmpty) {
         _setNotify(
             id: morningTimeId, time: morningDrinkTime, message: "昼のお薬の時間");
