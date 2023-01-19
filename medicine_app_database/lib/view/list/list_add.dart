@@ -24,7 +24,7 @@ class _ListAddPageState extends State<ListAddPage> {
   late String _title;
   late String _image;
   late String _ocrtext;
-  late String _time;
+  late DateTime _time;
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _ListAddPageState extends State<ListAddPage> {
     _title = widget.medicine?.title ?? '';
     _image = widget.medicine?.image ?? '';
     _ocrtext = widget.medicine?.ocrtext ?? '';
-    _time = widget.medicine?.time ?? '';
+    _time = widget.medicine?.time ?? DateTime.now();
   }
 
   void _addItem() async {
@@ -125,7 +125,7 @@ class _ListAddPageState extends State<ListAddPage> {
             child: InkWell(
               onTap: () async {
                 //カメラを起動
-                
+
               },
               child: _pickedFile != null
                   ? Image.file(File(_pickedFile!.path))

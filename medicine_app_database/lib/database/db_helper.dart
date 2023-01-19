@@ -4,23 +4,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-  const String _id = 'id';
-  const  String _tableName = "Medicine";
-  const String _title = 'title';
-  const String _image = 'image';
-  const String _ocrtext = 'ocrtext';
-  const String _time = 'time';
+const String _id = 'id';
+const String _tableName = "Medicine";
+const String _title = 'title';
+const String _image = 'image';
+const String _ocrtext = 'ocrtext';
+const String _time = 'time';
 
-  final List<String> columns= [
-    _id,
-    _title,
-    _image,
-    _ocrtext,
-    _time
-  ];
+final List<String> columns = [_id, _title, _image, _ocrtext, _time];
 
 class MedicineData {
-
   static Database? _database;
 
   MedicineData._createInstance();
@@ -63,7 +56,7 @@ class MedicineData {
     final db = await instance.database;
     var medicinesData = await db.query(_tableName);
 
-    return  medicinesData.map((map) => Medicine.fromMap(map)).toList();
+    return medicinesData.map((map) => Medicine.fromMap(map)).toList();
   }
 
   //1件ごとの薬のデータの読み込み
@@ -82,12 +75,10 @@ class MedicineData {
   //データの検索
   Future<List<Medicine>> search(String keyword) async {
     final db = await instance.database;
-    var maps = await db.query(
-      _tableName,
-      orderBy: '$_time DESC',
-      where: '$_title LIKE ?',
-      whereArgs: ['%$keyword%']
-    );
+    var maps = await db.query(_tableName,
+        orderBy: '$_time DESC',
+        where: '$_title LIKE ?',
+        whereArgs: ['%$keyword%']);
     if (maps.isEmpty) return [];
     return maps.map((map) => Medicine.fromMap(map)).toList();
   }
@@ -95,14 +86,15 @@ class MedicineData {
   //データベースの挿入
   Future<int> insert(Medicine medicine) async {
     final db = await instance.database;
-    return await db.insert(_tableName, medicine.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(_tableName, medicine.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   //データの更新
   Future update(Medicine medicine) async {
     final db = await instance.database;
     return await db.update(
-      _tableName, 
+      _tableName,
       medicine.toMap(),
       where: '$_id = ?',
       whereArgs: [medicine.id],

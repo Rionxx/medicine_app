@@ -1,9 +1,11 @@
+import 'package:intl/intl.dart';
+
 class Medicine {
   int? id;
   String title;
   String image;
   String ocrtext;
-  String time;
+  DateTime time;
 
   Medicine({
     this.id, 
@@ -18,7 +20,7 @@ class Medicine {
     String? title,
     String? image,
     String? ocrtext,
-    String? time
+    DateTime? time
   }) => Medicine(
     id: this.id,
     title: this.title,
@@ -32,7 +34,7 @@ class Medicine {
       'title': title,
       'image': image,
       'ocrtext': ocrtext,
-      'time' : time, 
+      'time' : DateFormat('yyyy/MM/dd(E) H:m').format(time), 
     };
   }
 

@@ -6,8 +6,13 @@ import 'package:medicine_app_database/view/update_page/list_update_page.dart';
 import 'list_add.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:medicine_app_database/view/image_fit.dart';
+
+/*編集機能、通知機能、データの追加、更新*/
 
 class ListPage extends StatefulWidget {
+  const ListPage({Key? key}) : super(key: key);
+
   @override
   State<ListPage> createState() => _ListPageState();
 }
@@ -15,27 +20,29 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   bool _searchBoolean = false;
   bool isLoading = false;
+  
   List<Medicine> medicineList = [
     Medicine(
         id: 0,
         title: '田中病院',
         image: 'lib/images/sample.jpg',
-        time: '5月12日(月)',
+        time: DateTime.now(),
         ocrtext: '田中病院'),
     Medicine(
         id: 1,
-        title: '博多病院',
+        title: '清水病院',
         image: 'lib/images/sample2.jpg',
-        time: '8月14日(水)',
-        ocrtext: '博多病院'),
+        time: DateTime.now(),
+        ocrtext: '清水病院'),
     Medicine(
         id: 2,
-        title: '平山病院',
+        title: '博多病院',
         image: 'lib/images/sample3.jpg',
-        time: '8月14日(水)',
+        time: DateTime.now(),
         ocrtext: '博多病院'),
   ];
   List<int> searchIndexMedicine = [];
+  List<int> deleteIndexMedicine = [];
   //DateTime _lastChangedDate = DateTime.now();
 
   List<String> keywordStorage = [];
@@ -62,7 +69,9 @@ class _ListPageState extends State<ListPage> {
     MedicineData.instance.delete;
     setState(() {
       medicineList.removeWhere((element) => element.id == id);
-      print("Delete Success id Number $id");
+        print('''
+          ID ${id}のデータが削除されました。
+        ''');
     });
   }
 
@@ -75,9 +84,17 @@ class _ListPageState extends State<ListPage> {
       for (int i = 0; i < medicineList.length; i++) {
         if (medicineList[i].title.contains(keyword)) {
           searchIndexMedicine.add(i);
+          print(
+              '''${medicineList[i].title}のデータが${searchIndexMedicine.length}件見つかりました。
+            データの内容は
+            id ${medicineList[i].id}
+            病院名 ${medicineList[i].title}
+            画像 ${medicineList[i].image}
+            日付 ${medicineList[i].time}
+            文字認識したテキスト ${medicineList[i].ocrtext}
+        ''');
         }
       }
-      print(keyword);
     });
   }
 
@@ -86,6 +103,7 @@ class _ListPageState extends State<ListPage> {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
+    print("${medicineList[oldIndex]}と${medicineList[newIndex]}が入れ替わりました");
     medicines.insert(newIndex, medicines.removeAt(oldIndex));
   }
 
@@ -244,19 +262,17 @@ class _ListPageState extends State<ListPage> {
   Widget imageView(BuildContext context, int index) {
     return InkWell(
       onTap: () async {
+        //全画面拡大
         await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    MemoPage(ocrText: medicineList[index].ocrtext)));
+                    ImageFitView(medicine: medicineList[index])));
       },
       child: Container(
         width: 250,
         height: 200,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.circular(20),
-        ),
+        child: Image.asset(medicineList[index].image),
       ),
     );
   }

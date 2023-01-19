@@ -3,14 +3,19 @@ class MedicineEvent {
   int? medicineId;
   String medicineName;
   String drinkDate;
+  int? morningTimeId;
   String morningTime;
-  String lanchTime;
+  String morningDoasgeText;
+  int? noonTimeId;
+  String noonTime;
+  String noonDoasgeText;
+  int? nightTimeId;
   String nightTime;
-  String amountDrink;
+  String nightDoasgeText;
 
   //通知のデータ
   int? notifyId;
-  int toggle;
+  int? toggle;
   String notifyTime;
   bool? isOn;
 
@@ -18,12 +23,17 @@ class MedicineEvent {
     this.medicineId,
     required this.medicineName,
     required this.drinkDate,
+    this.morningTimeId,
     required this.morningTime,
-    required this.lanchTime,
+    required this.morningDoasgeText,
+    this.noonTimeId,
+    required this.noonTime,
+    required this.noonDoasgeText,
+    this.nightTimeId,
     required this.nightTime,
-    required this.amountDrink,
+    required this.nightDoasgeText,
     this.notifyId,
-    required this.toggle,
+    this.toggle,
     required this.notifyTime,
     this.isOn
   });
@@ -33,9 +43,11 @@ class MedicineEvent {
       'medicine': medicineName,
       'drinkDate': drinkDate,
       'morningTime': morningTime,
-      'lanchTime': lanchTime,
+      'morningDoasgeText' : morningDoasgeText,
+      'noonTime': noonTime,
+      'noonDoasgeText': noonDoasgeText,
       'nightTime': nightTime,
-      'amountDrink': amountDrink,
+      'nightDoasgeText':nightDoasgeText, 
       'toggle': toggle,
       'notifyTime': notifyTime,
       'isOn': isOn == true ? 1 : 0,
@@ -46,13 +58,17 @@ class MedicineEvent {
     medicineId = json['medicineId'],
     medicineName = json['medicineName'],
     drinkDate = json['drinkDate'],
+    morningTimeId = json['morningTimeId'],
     morningTime = json['morningTime'],
-    lanchTime = json['lanchTime'],
+    morningDoasgeText = json['morningDoasgeText'],
+    noonTimeId = json['noonTimeId'],
+    noonTime = json['noonTime'],
+    noonDoasgeText = json['noonDoasgeText'],
+    nightTimeId = json['nightTimeId'],
     nightTime = json['nightTime'],
-    amountDrink = json['amountDrink'],
+    nightDoasgeText = json['nightDoasgeText'],
     notifyId = json['notifyId'],
     toggle = json['togggle'],
     notifyTime = json['notifyTime'],
     isOn = json['isOn'];
-
 }
