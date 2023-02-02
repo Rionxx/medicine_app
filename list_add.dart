@@ -1,21 +1,13 @@
 import 'dart:io';
-
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kenkyuu_medicine/List/list_add_model.dart';
 import 'package:kenkyuu_medicine/memo_page.dart';
 
-class ListAddPage extends StatefulWidget {
-  @override
-  State<ListAddPage> createState() => _ListAddPageState();
-}
-
-class _ListAddPageState extends State<ListAddPage> {
-  XFile? _pickedFile;
-  String? titleText;
-  String ocrText = '';
-
+class ListAddPage extends StatelessWidget {
   //タイトル入力フォーム
-  Widget titleTextFieldView(BuildContext context) {
+  Widget titleTextFieldView(BuildContext context, ListAddModel model) {
     return Container(
       alignment: Alignment.center,
       child: Padding(
@@ -44,7 +36,7 @@ class _ListAddPageState extends State<ListAddPage> {
                     hintText: "タイトル",
                   ),
                   onChanged: (titleText) {
-                    titleText = titleText;
+                    model.titleText = titleText;
                   },
                 ),
               ),
@@ -56,7 +48,7 @@ class _ListAddPageState extends State<ListAddPage> {
   }
 
   ///カメラコーナー
-  Widget cameraCornerView() {
+  Widget cameraCornerView(ListAddModel model) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Container(
@@ -91,9 +83,10 @@ class _ListAddPageState extends State<ListAddPage> {
             child: InkWell(
               onTap: () async {
                 //　カメラを起動
+                model.getImagecamera();
               },
-              child: _pickedFile != null
-                  ? Image.file(File(_pickedFile!.path))
+              child: model.croppedImageFile != null
+                  ? Image.file(File(model.croppedImageFile!.path))
                   : Container(
                       child: const Icon(Icons.camera_alt),
                       decoration: BoxDecoration(
@@ -108,8 +101,8 @@ class _ListAddPageState extends State<ListAddPage> {
     );
   }
 
-  //文字認識コーナー
-  Widget characterRecognitionCornerView() {
+  //文字認識
+  Widget characterRecognitionView(ListAddModel model, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Container(
@@ -127,22 +120,47 @@ class _ListAddPageState extends State<ListAddPage> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                alignment: Alignment.center,
-                height: 30,
-                width: 280,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  '文字認識',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
+              child: InkWell(
+                onTap: () async {
+                  try {
+                    await model.ocr();
+                  } catch (e) {
+                    print("エラー起きました:$e");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(e.toString()),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text("OK"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  }
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 30,
+                  width: 280,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    '文字認識',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 ),
               ),
             ),
             SizedBox(),
+
             //入力欄
             Container(
               height: 400,
@@ -161,9 +179,13 @@ class _ListAddPageState extends State<ListAddPage> {
                     await Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MemoPage(ocrText: ocrText)));
+                            builder: (context) => MemoPage(
+                                ocrText: model.ocrText != ""
+                                    ? model.ocrText!
+                                    : "")));
                   },
                   child: TextField(
+                    controller: model.textController,
                     //改行を可能にする
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
@@ -172,7 +194,7 @@ class _ListAddPageState extends State<ListAddPage> {
                       hintText: "文字認識された文字が入る",
                     ),
                     onChanged: (ocrText) {
-                      ocrText = ocrText;
+                      model.ocrText = ocrText;
                     },
                   ),
                 ),
@@ -185,7 +207,7 @@ class _ListAddPageState extends State<ListAddPage> {
   }
 
   //追加ボタン
-  Widget addButton() {
+  Widget addButton(ListAddModel model, BuildContext context) {
     return Container(
       height: 50,
       width: 200,
@@ -200,30 +222,77 @@ class _ListAddPageState extends State<ListAddPage> {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.pink[50]),
         ),
-        onPressed: () {},
+        onPressed: () {
+          addDialog(model, context);
+        },
         child: Text('追加', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
     );
   }
 
+  // 追加ダイアログ
+  Future addDialog(ListAddModel model, BuildContext context) async {
+    try {
+      await model.add();
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('追加しました。'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      Navigator.of(context).pop();
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(e.toString()),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.black, title: const Text('追加')),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              titleTextFieldView(context),
-              cameraCornerView(),
-              characterRecognitionCornerView(),
-              addButton()
-            ],
-          ),
-        ),
-      ),
+    return ChangeNotifierProvider<ListAddModel>.value(
+      value: ListAddModel(),
+      child: Scaffold(
+          appBar:
+              AppBar(backgroundColor: Colors.black, title: const Text('追加')),
+          body: Consumer<ListAddModel>(builder: (context, model, child) {
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    titleTextFieldView(context, model),
+                    cameraCornerView(model),
+                    characterRecognitionView(model, context),
+                    addButton(model, context)
+                  ],
+                ),
+              ),
+            );
+          })),
     );
   }
 }
